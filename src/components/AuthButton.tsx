@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 const AuthButton = ({ session }: { session: Session | null }) => {
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
 
   const handleSignIn = async () => {
     supabase.auth.signInWithOAuth({

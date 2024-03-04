@@ -4,13 +4,12 @@ import AuthButtonServer from '@/components/AuthButtonServer';
 import { redirect } from 'next/navigation';
 
 export default async function Home() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createServerComponentClient<Database>({ cookies });
   const { data: posts } = await supabase.from('Posts').select();
   const session = await supabase.auth.getSession();
   if (!session) {
     redirect('/login');
   }
-  // console.log(posts)
   return (
     <div>
       <AuthButtonServer />
