@@ -7,8 +7,21 @@ import PostsList from '@/components/PostsList';
 
 export default async function Home() {
   const supabase = createServerComponentClient<Database>({ cookies });
-  const { data: posts } = await supabase.from('posts').select('*, profile(*)');
-  const session = await supabase.auth.getSession();
+  const { data } = await supabase
+    .from('posts')
+    .select('*, profile(*),likes(*)');
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const posts =
+    data?.map(post => ({
+      ...post,
+      profile: Array.isArray(post.profile) ? post.profile[0] : post.profile,
+      user_has_liked_post: !!post.likes.find(
+        like => like.user_id === session?.user.id
+      ),
+      likes: post.likes.length,
+    })) ?? [];
   console.log(posts);
   if (!session) {
     redirect('/login');
