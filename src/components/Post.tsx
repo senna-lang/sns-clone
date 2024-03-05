@@ -21,6 +21,7 @@ const PostForm = () => {
   useEffect(() => {
     if (form.formState.isSubmitSuccessful) {
       toast.success('メール送信完了');
+      form.reset();
     }
   }, [form.formState.isSubmitSuccessful]);
 
@@ -36,7 +37,7 @@ const PostForm = () => {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ユーザーネーム</FormLabel>
+              <FormLabel>タイトル</FormLabel>
               <FormControl>
                 <Input placeholder="title" {...field} />
               </FormControl>
