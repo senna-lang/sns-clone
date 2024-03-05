@@ -1,29 +1,19 @@
 import React from 'react';
+import LikeButton from './LikeButton';
 
-type Post = {
-  created_at: string;
-  id: string;
-  title: string | null;
-  user_id: string | null;
-  profile: {
-    avatar_url: string;
-    id: string;
-    name: string;
-    username: string;
-  } | null;
-};
 
-const PostsList = ({ posts }: { posts: Post[] | null }) => {
+const PostsList = ({ posts }: {posts:PostsWithAuthor[]}) => {
   // console.log(posts)
   return (
     <div>
       {posts?.map(post => (
         <div key={post.id}>
-          {/* <p>
+          <p>
             {post.profile?.name}
             {post.profile?.username}
-          </p> */}
+          </p>
           <p>{post.title}</p>
+          <LikeButton post={post} />
         </div>
       ))}
     </div>
