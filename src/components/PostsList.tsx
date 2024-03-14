@@ -1,6 +1,9 @@
 'use client';
-import React, { useOptimistic } from 'react';
+import React, { useEffect, useOptimistic } from 'react';
 import LikeButton from './LikeButton';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import { channel } from 'diagnostics_channel';
 
 const PostsList = ({ posts }: { posts: PostsWithAuthor[] }) => {
   const [optimisticPosts, addOptimisticPosts] = useOptimistic<
@@ -12,6 +15,31 @@ const PostsList = ({ posts }: { posts: PostsWithAuthor[] }) => {
     newOptimisticPosts[index] = newPosts;
     return newOptimisticPosts;
   });
+
+  const supabase = createClientComponentClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime posts')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'posts',
+        },
+        payload => {
+          router.refresh();
+          console.log(payload)
+        }
+      )
+      .subscribe();
+      return () => {
+        supabase.removeChannel(channel)
+      }
+  }, [supabase,router]);
+
   return (
     <div>
       {optimisticPosts?.map(post => (
