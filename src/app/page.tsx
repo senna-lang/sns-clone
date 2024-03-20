@@ -2,7 +2,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import AuthButtonServer from '@/components/AuthButtonServer';
 import { redirect } from 'next/navigation';
-import PostForm from '@/components/Post';
+import { PostFormButton } from '@/components/PostFormButton';
 import PostsList from '@/components/PostsList';
 
 export default async function Home() {
@@ -27,10 +27,14 @@ export default async function Home() {
     redirect('/login');
   }
   return (
-    <div>
-      <PostForm />
-      <AuthButtonServer />
-      <PostsList posts={posts} />
+    <div className="w-full">
+      <div className=" flex flex-col items-center justify-center">
+        <PostFormButton />
+        <div className=" fixed top-10 right-20">
+          <AuthButtonServer />
+        </div>
+        <PostsList posts={posts} />
+      </div>
     </div>
   );
 }
