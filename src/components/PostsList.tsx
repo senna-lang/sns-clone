@@ -3,7 +3,13 @@ import React, { useEffect, useOptimistic } from 'react';
 import LikeButton from './LikeButton';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
-import { channel } from 'diagnostics_channel';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from './ui/card';
 
 const PostsList = ({ posts }: { posts: PostsWithAuthor[] }) => {
   const [optimisticPosts, addOptimisticPosts] = useOptimistic<
@@ -31,26 +37,29 @@ const PostsList = ({ posts }: { posts: PostsWithAuthor[] }) => {
         },
         payload => {
           router.refresh();
-          console.log(payload)
+          // console.log(payload);
         }
       )
       .subscribe();
-      return () => {
-        supabase.removeChannel(channel)
-      }
-  }, [supabase,router]);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, router]);
 
   return (
-    <div>
+    <div className=" grid grid-cols-2 items-center gap-2">
       {optimisticPosts?.map(post => (
-        <div key={post.id}>
-          <p>
-            {post.profile?.name}
-            {post.profile?.username}
-          </p>
-          <p>{post.title}</p>
-          <LikeButton post={post} addOptimisticPosts={addOptimisticPosts} />
-        </div>
+        <Card key={post.id} className="w-[350px]">
+          <CardHeader>
+            <CardTitle>{post.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LikeButton post={post} addOptimisticPosts={addOptimisticPosts} />
+          </CardContent>
+          <CardFooter>
+            <p>{post.created_at.split('T')[0]}</p>
+          </CardFooter>
+        </Card>
       ))}
     </div>
   );
